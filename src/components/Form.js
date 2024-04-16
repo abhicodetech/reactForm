@@ -1,9 +1,7 @@
 import './form.css';
 import axios from 'axios';
-// import { Formik, Form, Field, ErrorMessage } from 'formik';
 import TextField from '@mui/material/TextField';
-import * as Yup from 'yup';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { InputLabel, MenuItem, Select } from '@mui/material';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function Form() {
 
+    const [date,setDate] = useState(new Date());
     const [fullName, setFullName] = useState('');
     const [fullNameError, setNameError] = useState('');
     const [contact, setContact] = useState('');
@@ -25,6 +24,8 @@ export default function Form() {
     const [birthdateError, setBirthdateError] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
+
+    
 
     const handleFullName = (e) => {
         const item = e.target.value;
@@ -346,7 +347,7 @@ export default function Form() {
                                     },
                                 }}
                             >
-                                {Array.from({ length: 31 }, (_, i) => i + 1).map(day => (
+                                {Array.from({ length: date.getFullYear()==year ? date.getDate() : 31}, (_, i) => i + 1).map(day => (
                                     <MenuItem key={day} value={day}>{day}</MenuItem>
                                 ))}
                             </Select>
@@ -371,7 +372,7 @@ export default function Form() {
                                     },
                                 }}
                             >
-                                {Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
+                                { Array.from({ length: date.getFullYear()==year ? (date.getMonth()+1) : 12 }, (_, i) => i + 1).map(month => (
                                     <MenuItem key={month} value={month}>{month}</MenuItem>
                                 ))}
                             </Select>
