@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function Form() {
 
-    const [date,setDate] = useState(new Date());
+    const [date, setDate] = useState(new Date());
     const [fullName, setFullName] = useState('');
     const [fullNameError, setNameError] = useState('');
     const [contact, setContact] = useState('');
@@ -25,7 +25,7 @@ export default function Form() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
-    
+
 
     const handleFullName = (e) => {
         const item = e.target.value;
@@ -65,7 +65,8 @@ export default function Form() {
     const handleEmail = (e) => {
         const emailValue = e.target.value;
         setEmail(emailValue);
-        const regEx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // const regEx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const regEx = /^[a-zA-Z0-9\.]{3,10}@[a-zA-Z]{2,10}\.[a-zA-Z]{2,5}$/;
 
         if (!emailValue.trim()) {
             setEmailError('Email cannot be empty.');
@@ -182,29 +183,36 @@ export default function Form() {
 
     const handleSubmit = async () => {
 
-        
-
-        const selectedDate = new Date(`${month} ${day}, ${year}`);
+        const birthDate = new Date(`${month} ${day}, ${year}`);
         let values = {
             fullName,
-            contact,
+            contact: contact.replace(/\D/g, ''),
             email,
-            selectedDate,
+            birthDate,
             password
         }
         console.log(!fullNameError && !contactError && !email && birthdateError && !passwordError);
 
         if ((fullName && contact && email && day && month && year && password) && (!fullNameError && !contactError && !emailError && !birthdateError && !passwordError && !confirmPasswordError)) {
-            console.log('Request Sent', values);
-            let res = await axios.post('http://localhost:3001/api/auth/signup', values);
-            console.log(res);
-            toast.success("User account successfully created.", {
+            try {
+                console.log('Request Sent', values);
+                let res = await axios.post('http://localhost:3001/api/auth/signup', values);
+                toast.success("User account successfully created.", {
+                    position: "top-right",
+                    theme: "colored",
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                });
+                // clearAllValues();
+            }
+            catch {
+                toast.error("Sorry For Inconvenience", {
                 position: "top-right",
                 theme: "colored",
                 hideProgressBar: true,
-                closeOnClick: true,
+                closeOnClick: false
             });
-            clearAllValues();
+            }
         } else {
             console.log('Req Not Sent');
             // toast.error("Please Check all required fields.", {
@@ -215,8 +223,8 @@ export default function Form() {
             // });
 
             const errors = [fullNameError, contactError, emailError, birthdateError, passwordError, confirmPasswordError];
-            const fields = [fullName,contact,email,day,month,year,password,confirmPassword];
-            const fieldNames=['FullName','Contact','Email','Birth Day','Birth Month','Birth Year','Password','Confirm Password'];
+            const fields = [fullName, contact, email, day, month, year, password, confirmPassword];
+            const fieldNames = ['FullName', 'Contact', 'Email', 'Birth Day', 'Birth Month', 'Birth Year', 'Password', 'Confirm Password'];
             errors.forEach((v, i, arr) => {
                 if (v) {
                     toast.error(v, {
@@ -227,9 +235,9 @@ export default function Form() {
                     });
                 }
             });
-            fields.forEach((v,i,arr)=>{
-                if(!v) {
-                    toast.error(`${fieldNames[i]} Cannot be Empty` , {
+            fields.forEach((v, i, arr) => {
+                if (!v) {
+                    toast.error(`${fieldNames[i]} Cannot be Empty`, {
                         position: "top-right",
                         theme: "colored",
                         hideProgressBar: true,
@@ -347,7 +355,7 @@ export default function Form() {
                                     },
                                 }}
                             >
-                                {Array.from({ length: date.getFullYear()==year ? date.getDate() : 31}, (_, i) => i + 1).map(day => (
+                                {Array.from({ length: date.getFullYear() == year ? date.getDate() : 31 }, (_, i) => i + 1).map(day => (
                                     <MenuItem key={day} value={day}>{day}</MenuItem>
                                 ))}
                             </Select>
@@ -372,7 +380,7 @@ export default function Form() {
                                     },
                                 }}
                             >
-                                { Array.from({ length: date.getFullYear()==year ? (date.getMonth()+1) : 12 }, (_, i) => i + 1).map(month => (
+                                {Array.from({ length: date.getFullYear() == year ? (date.getMonth() + 1) : 12 }, (_, i) => i + 1).map(month => (
                                     <MenuItem key={month} value={month}>{month}</MenuItem>
                                 ))}
                             </Select>
